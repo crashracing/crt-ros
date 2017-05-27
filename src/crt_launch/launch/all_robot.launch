@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!-- Crash: Base system. Launch this in a screen/tmux on the Pi 3 and keep it running.
+To play a game you also need to start the System Control after this:
+$ rosrun crt_states sc.py
+-->
+<launch>
+    <include file="$(find crt_launch)/launch/multimaster.launch" />
+
+    <!-- Navigation and Control stack, LMC node, Arduino Roof node -->
+    <include file="$(find crt_launch)/launch/crash_usb.launch" />
+
+    <!-- Hokuyo USB -->
+    <include file="$(find crt_launch)/launch/laserscanner.launch" />
+
+    <!-- TURAG Debug Server for flashing the LMC and test menu/debug output -->
+    <include file="$(find crt_launch)/launch/debugserver.launch" />
+
+    <!--    <include file="$(find raspicam_node)/launch/camerav1_1024x768_10fps.launch" />-->
+</launch>

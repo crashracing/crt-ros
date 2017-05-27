@@ -1,0 +1,29 @@
+<launch>
+
+  <!-- GDB functionality -->
+  <arg name="debug" default="false" />
+  <arg unless="$(arg debug)" name="launch_prefix" value="" />
+  <arg     if="$(arg debug)" name="launch_prefix" value="gdb --ex run --args" />
+
+  <!-- Load example URDF -->
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find crtbot_description)/urdf/crash_simple.xacro'" />
+
+  <group ns="crtbot">
+
+    <!-- Load hardware interface -->
+    <node name="crtbot_hardware_interface" pkg="crt_control" type="crtbot_hw_main"
+          output="screen" launch-prefix="$(arg launch_prefix)" required="true" />
+
+    <!-- Load controller settings -->
+    <rosparam file="$(find crt_control)/crtbot_control/config/crtbot_controllers.yaml" command="load"/>
+
+    <!-- Load controller manager -->
+    <node name="ros_control_controller_manager" pkg="controller_manager" type="controller_manager" respawn="false"
+	  output="screen" args="spawn joint_state_controller diff_drive_controller" />
+
+    <!-- Convert joint states to /tf tranforms -->
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+  </group>
+
+</launch>

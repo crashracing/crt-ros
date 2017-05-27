@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package>
+  <name>crtbot_control</name>
+  <version>1.0.0</version>
+  <description>Simple simulation interface and template for setting up a hardware interface for crtbot</description>
+
+  <!-- original code of ros_control_boilerplate:
+  <license>BSD</license>-->
+  <!-- new code and changes licensed under: -->
+  <license>GPLv3</license>
+
+  <url type="website">https://turag.de/crt</url>
+  <url type="repository">https://github.com/crashracing/</url>
+
+  <maintainer email="crt@turag.de">Crash Racing Team (TURAG)</maintainer>
+  <author email="crt@turag.de">Crash Racing Team (TURAG)</author>
+  <author email="davetcoleman@gmail.com">Dave Coleman</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>crt_control</build_depend>
+
+  <run_depend>crt_control</run_depend>
+
+  <export>
+  </export>
+</package>

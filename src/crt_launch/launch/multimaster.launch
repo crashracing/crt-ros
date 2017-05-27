@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<!-- Crash/PC: Multimaster.
+-->
+<launch>
+    <include file="$(find crt_launch)/launch/master_discovery.launch" />
+    <include file="$(find crt_launch)/launch/master_sync.launch" />
+</launch>

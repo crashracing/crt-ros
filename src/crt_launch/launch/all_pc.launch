@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!-- Developer PC: Launch this before other Scripts and keep it running.
+
+The Developer PC is optional and sits in the same LAN/WiFi as Crash and connects
+to it via Multimaster-FKIE.
+-->
+<launch>
+	<include file="$(find crt_launch)/launch/multimaster.launch" />
+
+	<!-- Robot Model for RViz, better keep this local to avoid transmitting the
+ 	few MBs of the model through WiFi -->
+	<param name="pc_robot_description" command="$(find xacro)/xacro --inorder '$(find crtbot_description)/urdf/crash_simple.xacro'" />
+
+	<!-- USB Joystick Remote Control -->
+	<include file="$(find crt_launch)/launch/teleop_saitek.launch" />
+</launch>

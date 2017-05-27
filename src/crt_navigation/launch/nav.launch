@@ -1,0 +1,36 @@
+<launch>
+<!-- Crash: Navigation Stack.
+
+Global Planner: A*
+Local Planner: Trajectory Rollout
+
+Configuration based on: https://github.com/cvra/goldorak/tree/master/goldorak_navigation
+-->
+	<node pkg="move_base" type="move_base" respawn="true" name="move_base" output="screen">
+  	  <rosparam file="$(find crt_navigation)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+  	 	<rosparam file="$(find crt_navigation)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+  		<rosparam file="$(find crt_navigation)/config/local_costmap_params.yaml" command="load" />
+  		<rosparam file="$(find crt_navigation)/config/global_costmap_params.yaml" command="load" />
+  		<rosparam file="$(find crt_navigation)/config/base_local_planner_params.yaml" command="load" />
+  		<rosparam file="$(find crt_navigation)/config/global_planner_params.yaml" command="load" />
+  		<rosparam file="$(find crt_navigation)/config/move_base_params.yaml" command="load" />
+
+      <remap from="/cmd_vel" to="/crtbot/diff_drive_controller/cmd_vel" />
+	</node>
+
+	<!-- map of the pitch -->
+	<node name="map_server" pkg="map_server" type="map_server" args="$(find crt_navigation)/maps/eurobot2017.yaml" output="screen">
+		<param name="frame_id" value="/map"/>
+	</node>
+
+	<!-- SLAM: too heavy for the Pi 3 in current configuration -->
+<!--
+	<node pkg="amcl" type="amcl" name="amcl" output="screen">
+		<rosparam file="$(find crt_navigation)/config/amcl_params.yaml" command="load" />
+
+	        <param name="initial_pose_x"            value="2"/>
+		<param name="initial_pose_y"            value="2"/>
+		<param name="initial_pose_a"            value="0"/>
+	</node>
+-->
+</launch>

@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+<!-- based on: https://github.com/ros-simulation/gazebo_ros_demos/blob/kinetic-devel/rrbot_description/urdf/rrbot.xacro -->
+<robot name="crash" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Constants for robot dimensions -->
+  <xacro:property name="PI" value="3.1415926535897931"/>
+
+  <xacro:property name="mass" value="7.2" /> <!-- arbitrary value for mass -->
+  <xacro:property name="width" value="0.18" />
+  <xacro:property name="length" value="0.16" />
+  <xacro:property name="height" value="0.35" />
+
+  <xacro:property name="wheel_diam" value="0.064" />
+  <xacro:property name="wheel_dist" value="0.15" />
+  <xacro:property name="wheel_length" value="0.015" />
+
+  <!--<xacro:property name="camera_link" value="0.05" /> -->
+  <!-- Size of square 'camera' box -->
+  <xacro:property name="axel_offset" value="0.05" /> <!-- Space btw top of beam and the each joint -->
+
+  <!-- Import all Gazebo-customization elements, including Gazebo colors -->
+  <xacro:include filename="$(find crtbot_description)/urdf/crash.gazebo" />
+  <!-- Import Rviz colors -->
+  <xacro:include filename="$(find crtbot_description)/urdf/materials.xacro" />
+
+  <!-- Used for fixing robot to Gazebo 'base_link' -->
+  <link name="base_link"/>
+
+  <joint name="fixed" type="fixed">
+    <parent link="base_link"/>
+    <child link="main_body"/>
+  </joint>
+
+  <!-- Base Link -->
+  <link name="main_body">
+    <collision>
+      <origin xyz="0 0 ${height/2}" rpy="0 0 0"/>
+      <geometry>
+         <box size="${length} ${width} ${height}"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 ${height/2}" rpy="0 0 0"/>
+      <geometry>
+	       <box size="${length} ${width} ${height}"/>
+      </geometry>
+      <material name="orange"/>
+    </visual>
+
+    <inertial>
+      <origin xyz="0 0 ${height/2}" rpy="0 0 0"/>
+      <mass value="${mass}"/>
+      <inertia
+	  ixx="${mass / 12.0 * (width*width + height*height)}" ixy="0.0" ixz="0.0"
+	  iyy="${mass / 12.0 * (height*height + width*width)}" iyz="0.0"
+	  izz="${mass / 12.0 * (width*width + width*width)}"/>
+    </inertial>
+  </link>
+
+  <!--<joint name="joint1" type="continuous">
+    <parent link="main_body"/>
+    <child link="link2"/>
+    <origin xyz="0 ${width} ${height - axel_offset}" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="0.7"/>
+  </joint>-->
+
+  <joint name="hokuyo_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="0 0 ${height + axel_offset}" rpy="0 0 0"/>
+    <parent link="main_body"/>
+    <child link="hokuyo_link"/>
+  </joint>
+
+  <!-- Hokuyo Laser -->
+  <link name="hokuyo_link">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+	       <box size="0.1 0.1 0.1"/>
+      </geometry>
+    </collision>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://crtbot_description/meshes/hokuyo.dae"/>
+      </geometry>
+    </visual>
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+
+  <link name="wheel_l_link">
+    <visual>
+      <origin rpy="${PI/2} 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="${wheel_length}" radius="${wheel_diam/2}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="${wheel_length}" radius="${wheel_diam/2}"/>
+      </geometry>
+      <origin rpy="${PI/2} 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+
+  <link name="wheel_r_link">
+    <visual>
+      <origin rpy="${PI/2} 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="${wheel_length}" radius="${wheel_diam/2}"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="${wheel_length}" radius="${wheel_diam/2}"/>
+      </geometry>
+      <origin rpy="${PI/2} 0 0" xyz="0 0 0"/>
+    </collision>
+  </link>
+
+  <joint name="wheel_l_joint" type="continuous">
+    <axis rpy="0 0 0" xyz="0 1 0"/>
+    <parent link="base_link"/>
+    <child link="wheel_l_link"/>
+    <origin rpy="0 0 0" xyz="0 -${wheel_dist/2} ${wheel_diam/2}"/>
+  </joint>
+
+  <joint name="wheel_r_joint" type="continuous">
+    <axis rpy="0 0 0" xyz="0 1 0"/>
+    <parent link="base_link"/>
+    <child link="wheel_r_link"/>
+    <origin rpy="0 0 0" xyz="0 ${wheel_dist/2} ${wheel_diam/2}"/>
+  </joint>
+
+  <transmission name="wheel_l_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="wheel_l_joint">
+      <hardwareInterface>VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor_l">
+      <hardwareInterface>VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="wheel_r_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="wheel_r_joint">
+      <hardwareInterface>VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor_r">
+      <hardwareInterface>VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+</robot>

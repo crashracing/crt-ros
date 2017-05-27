@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!-- Developer PC: Gazebo-simulated Crash.
+-->
+<launch>
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find crt_launch)/worlds/test1.world"/> <!-- Note: the world_name is with respect to GAZEBO_RESOURCE_PATH environmental variable -->
+        <arg name="paused" value="false"/>
+        <arg name="use_sim_time" value="true"/>
+        <arg name="gui" value="false"/>
+        <arg name="headless" value="false"/>
+        <arg name="debug" value="false"/>
+    </include>
+
+    <!-- Convert an xacro and put on parameter server -->
+    <param name="robot_description" command="$(find xacro)/xacro --inorder $(find crtbot_description)/urdf/crash_simple.xacro" />
+
+    <!-- Spawn a robot into Gazebo -->
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model crash" />
+
+    <include file="$(find crt_control)/crtbot_control/launch/crtbot_simulation.launch" />
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find crt_launch)/config/crtbot_gazebo.rviz"/>
+
+    <!--<node pkg="tf" type="static_transform_publisher" name="map_to_hokuyo_link"
+        args="0.067 -0.0015 0.063 0 3.1415927 0 /map /hokuyo_link 10" />-->
+    <node pkg="tf" type="static_transform_publisher" name="map_to_odom"
+        args="0 0 0 0 0 0 /map /odom 10" />
+    <node pkg="tf" type="static_transform_publisher" name="world_to_map"
+        args="0 0 0 0 0 0 /world /map 10" />
+</launch>

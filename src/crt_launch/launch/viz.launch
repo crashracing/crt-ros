@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<!-- Developer PC: Crash Visualization.
+Launch this after all_pc.launch.
+-->
+<launch>
+    <include file="$(find crt_control)/crtbot_control/launch/crtbot_visualize.launch" />
+</launch>

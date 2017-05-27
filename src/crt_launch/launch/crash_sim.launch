@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!-- Developer PC: Launch simulated Crash.
+-->
+<launch>
+    <node pkg="tf" type="static_transform_publisher" name="map_to_odom"
+        args="0 0 0 0 0 0 /map /odom 100" />
+    <node pkg="tf" type="static_transform_publisher" name="world_to_map"
+        args="0 0 0 0 0 0 /world /map 100" />
+
+    <!--<include file="$(find crt_launch)/launch/mapping_default.launch" />-->
+	<node name="map_server" pkg="map_server" type="map_server" args="$(find crt_navigation)/maps/empty.yaml" output="screen">
+		<param name="frame_id" value="/map"/>
+	</node>
+
+    <include file="$(find crt_control)/crtbot_control/launch/crtbot_simulation.launch" />
+    <include file="$(find crt_navigation)/launch/nav.launch" />
+</launch>

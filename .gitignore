@@ -1,0 +1,8 @@
+build
+devel
+*.creator.user
+
+.vagrant
+*.swp
+*.pyc
+

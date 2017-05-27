@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<!-- Crash: launch TURAG Debug Server.
+Just don't launch this if you don't have it.
+-->
+<launch>
+    <!-- debug server for STM32 flashing etc. -->
+    <node name="debugserver" pkg="crt_launch" type="debugserver.sh" output="screen" respawn="true" />
+
+    <!-- serial port relay between crt_control and debug server -->
+    <node name="debugserver_socat" pkg="crt_launch" type="debugserver-socat.sh" output="screen" respawn="true" />
+</launch>

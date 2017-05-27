@@ -1,0 +1,18 @@
+
+<library path="lib/libcrt_rviz_plugins">
+    <class name="rviz_plugin_tutorials/Teleop"
+           type="rviz_plugin_tutorials::TeleopPanel"
+           base_class_type="rviz::Panel">
+      <description>
+        A panel widget allowing simple diff-drive style robot base control.
+      </description>
+    </class>
+
+    <class name="crt_rviz_plugins/HardwareMeasurements"
+         type="crt_rviz_plugins::HardwareMeasurements"
+         base_class_type="rviz::Panel">
+      <description>
+        A panel widget showing battery and others measurements.
+      </description>
+    </class>
+</library>

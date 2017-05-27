@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<launch>
+    <node pkg="tf" type="static_transform_publisher" name="map_to_odom"
+        args="0 0 0 0 0 0 /map /odom 100" />
+    <!--<node pkg="lcsr_tf_tools" type="multi_static_transform_publisher.py" name="map_to_odom" respawn="true" />
+    <node pkg="lcsr_tf_tools" type="set_multi_static.py" name="map_to_odom_initial"
+        args="-node-name map_to_odom -xyz 0 0 0 -ypr 0 0 0 /map /odom 10" />-->
+
+    <node pkg="tf" type="static_transform_publisher" name="world_to_map"
+        args="0 0 0 0 0 0 /world /map 100" />
+
+    <!-- leave LMC bootloader -->
+    <!--<node name="lmc_leavebl" pkg="crt_launch" type="lmc_leavebl.sh" output="screen" />-->
+
+    <!-- launch ros_control hardware node -->
+    <include file="$(find crt_control)/crtbot_control/launch/crtbot_hardware.launch" />
+
+    <!-- navigation stack -->
+    <include file="$(find crt_navigation)/launch/nav.launch" />
+
+    <!-- clean wheels on UI button press -->
+    <node pkg="crt_launch" type="button_down_clean.py" name="button_down_clean" />
+
+    <!-- communication with roof Arduino (LED output, 2 Button input, Missile Launcher) -->
+    <node pkg="rosserial_python" type="serial_node.py" ns="arduino" name="roof" respawn="true">
+        <param name="port" value="/dev/serial0"/>
+        <param name="baud" value="115200"/>
+    </node>
+</launch>
